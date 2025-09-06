@@ -10,12 +10,14 @@ const openai = new OpenAI({
 export class OpenAIService {
   static async transcribeAudio(audioBlob: Blob): Promise<string> {
     try {
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.webm');
-      formData.append('model', 'whisper-1');
+      // Convert Blob to File object for OpenAI API compatibility
+      const audioFile = new File([audioBlob], 'audio.webm', {
+        type: audioBlob.type || 'audio/webm',
+        lastModified: Date.now(),
+      });
 
       const response = await openai.audio.transcriptions.create({
-        file: audioBlob,
+        file: audioFile,
         model: 'whisper-1',
       });
 
