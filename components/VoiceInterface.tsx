@@ -3,8 +3,8 @@
 import { useState, useCallback } from 'react';
 import { MicButton } from './MicButton';
 import { VoiceRecorder } from '@/lib/voice-recorder';
-import { OpenAIService } from '@/lib/openai';
-import { SupabaseService } from '@/lib/supabase';
+import { apiClient } from '@/lib/api-client';
+import { ProgressIndicator } from './LoadingSpinner';
 import { VoiceRecordingState, AIParseResult } from '@/lib/types';
 import { CheckCircle, AlertCircle, Calendar, CheckSquare } from 'lucide-react';
 
@@ -24,6 +24,15 @@ export function VoiceInterface({ userId, onTaskCreated, onEventCreated }: VoiceI
 
   const [lastResult, setLastResult] = useState<AIParseResult | null>(null);
   const [voiceRecorder] = useState(() => new VoiceRecorder());
+  const [processingStep, setProcessingStep] = useState(0);
+
+  const processingSteps = [
+    'Recording audio...',
+    'Transcribing speech...',
+    'Understanding command...',
+    'Creating item...',
+    'Complete!'
+  ];
 
   const handleStartRecording = useCallback(async () => {
     try {
@@ -41,28 +50,31 @@ export function VoiceInterface({ userId, onTaskCreated, onEventCreated }: VoiceI
   const handleStopRecording = useCallback(async () => {
     try {
       setRecordingState(prev => ({ ...prev, isRecording: false, isProcessing: true }));
+      setProcessingStep(1);
       
       const audioBlob = await voiceRecorder.stopRecording();
       
       // Transcribe audio
-      const transcript = await OpenAIService.transcribeAudio(audioBlob);
+      setProcessingStep(2);
+      const transcript = await apiClient.transcribeAudio(audioBlob);
       setRecordingState(prev => ({ ...prev, transcript }));
       
       // Parse the transcript
-      const parseResult = await OpenAIService.parseVoiceCommand(transcript);
+      setProcessingStep(3);
+      const parseResult = await apiClient.parseVoiceCommand(transcript);
       setLastResult(parseResult);
       
       // Create task or event based on parse result
+      setProcessingStep(4);
       if (parseResult.type === 'task' && parseResult.description) {
-        await SupabaseService.createTask({
+        await apiClient.createTask({
           userId,
           description: parseResult.description,
-          isCompleted: false,
           dueDate: parseResult.dueDate,
         });
         onTaskCreated?.();
       } else if (parseResult.type === 'event' && parseResult.title) {
-        await SupabaseService.createEvent({
+        await apiClient.createEvent({
           userId,
           title: parseResult.title,
           startTime: parseResult.startTime || new Date().toISOString(),
@@ -72,13 +84,18 @@ export function VoiceInterface({ userId, onTaskCreated, onEventCreated }: VoiceI
         onEventCreated?.();
       }
       
-      setRecordingState(prev => ({ ...prev, isProcessing: false }));
+      setProcessingStep(5);
+      setTimeout(() => {
+        setRecordingState(prev => ({ ...prev, isProcessing: false }));
+        setProcessingStep(0);
+      }, 1000);
     } catch (error) {
       setRecordingState(prev => ({
         ...prev,
         isProcessing: false,
         error: error instanceof Error ? error.message : 'Failed to process recording'
       }));
+      setProcessingStep(0);
     }
   }, [voiceRecorder, userId, onTaskCreated, onEventCreated]);
 
@@ -98,6 +115,15 @@ export function VoiceInterface({ userId, onTaskCreated, onEventCreated }: VoiceI
           <div className="absolute -inset-4 rounded-full border-2 border-purple-400 animate-ping"></div>
         )}
       </div>
+
+      {/* Processing Progress */}
+      {recordingState.isProcessing && (
+        <ProgressIndicator
+          steps={processingSteps}
+          currentStep={processingStep - 1}
+          variant="voice"
+        />
+      )}
 
       {/* Status Messages */}
       {recordingState.error && (

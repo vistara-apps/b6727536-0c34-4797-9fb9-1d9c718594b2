@@ -1,6 +1,8 @@
 # VoiceFlow AI - Base Mini App
 
-A Next.js Base mini-app that transforms spoken thoughts into actionable to-do lists and scheduled calendar events with smart reminders.
+**Speak your tasks, master your day.**
+
+A production-ready Next.js Base mini-app that transforms spoken thoughts into actionable to-do lists and scheduled calendar events with smart reminders. Built with Next.js 15, TypeScript, and integrated with Base blockchain.
 
 ## Features
 

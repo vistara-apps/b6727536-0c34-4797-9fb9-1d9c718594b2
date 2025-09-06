@@ -130,4 +130,51 @@ export class SupabaseService {
       return [];
     }
   }
+
+  static async updateEvent(eventId: string, updates: Partial<Event>): Promise<Event | null> {
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .update(updates)
+        .eq('eventId', eventId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error updating event:', error);
+      return null;
+    }
+  }
+
+  static async deleteTask(taskId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .delete()
+        .eq('taskId', taskId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      return false;
+    }
+  }
+
+  static async deleteEvent(eventId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('eventId', eventId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      return false;
+    }
+  }
 }
