@@ -1,0 +1,30 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "name": "VoiceFlow AI",
+    "subtitle": "Built with Zara",
+    "description": "VoiceFlow AI is a Base Mini App built with Zara.",
+    "iconUrl": "https://0co.to/images/zara-2.png",
+    "homeUrl": "https://b67275360c3447979fb91d9c718594b2-n5ab.vercel.app",
+    "splashImageUrl": "https://b67275360c3447979fb91d9c718594b2-n5ab.vercel.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "heroImageUrl": "https://b67275360c3447979fb91d9c718594b2-n5ab.vercel.app/image.png",
+    "tagline": "VoiceFlow AI",
+    "screenshotUrls": [
+      "https://b67275360c3447979fb91d9c718594b2-n5ab.vercel.app/screenshot.png",
+      "https://b67275360c3447979fb91d9c718594b2-n5ab.vercel.app/screenshot.png"
+    ],
+    "primaryCategory": "social",
+    "tags": [
+      "base",
+      "miniapp",
+      "onchainkit"
+    ],
+    "webhookUrl": "https://b67275360c3447979fb91d9c718594b2-n5ab.vercel.app/api/webhook"
+  }
+}

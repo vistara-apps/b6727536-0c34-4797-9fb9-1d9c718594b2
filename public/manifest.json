@@ -1,0 +1,14 @@
+{
+  "name": "VoiceFlow AI",
+  "description": "VoiceFlow AI is a Base Mini App built with Zara.",
+  "image": "https://dummyimage.com/1200x628/0a0b0d/ffffff.png&text=OG",
+  "external_url": "https://b6727536-0c34-4797-9fb9-1d9c718594b2.vercel.app",
+  "properties": {
+    "app": {
+      "name": "VoiceFlow AI",
+      "description": "VoiceFlow AI is a Base Mini App built with Zara.",
+      "url": "https://b6727536-0c34-4797-9fb9-1d9c718594b2.vercel.app",
+      "icon": "https://0co.to/images/zara-2.png"
+    }
+  }
+}
